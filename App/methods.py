@@ -3,25 +3,28 @@ import random
 
 # TODO: rather than hard-coded colors, allow for input of array of colors
 # TODO: Introduce random death occurrence
-
-
-ants = {}
+# TODO: D3 animated chart of positions and cycles
 
 
 # Initializes the input number of ants with specified colors
 def get_ants(num_blue, num_green):
+    ants = {}
     for s in range(0, num_blue + 1):
         ants[s] = {'position': 0, 'color': 'blue', 'colors': []}
-    for t in range(s, s + num_green + 1):
+    for t in range(s, s + num_green):
         ants[t] = {'position': 0, 'color': 'green', 'colors': []}
-    return print('get_ants done!')
+    return ants
 
 
 # Each cycle each ant moves to a random position; checks if ants 'meet' (are at same position)
-def cycle_ants(cycles, position_range):
+def cycle_ants(cycles, position_range, ants):
+    position_history = {}
+    changes_per_cycle = []
     for i in range(0, cycles + 1):
+        position_history[i] = []
         for s in ants:
             ants[s]['position'] = random.randint(0, position_range)
+            position_history[i].append({s: ants[s]['position']})
         for t in range(0, len(ants)):
             for u in range(0, len(ants)):
                 if t == u:
@@ -30,7 +33,8 @@ def cycle_ants(cycles, position_range):
                     if ants[t]['position'] == ants[u]['position']:
                         ants[t]['colors'].append(ants[u]['color'])
                         ants[u]['colors'].append(ants[t]['color'])
-        meeting_results()
+        changes = meeting_results(ants)
+        changes_per_cycle.append({'cycles': i, 'changes': changes})
     # Show ending distribution of ants
     Green = 0
     Blue = 0
@@ -39,11 +43,13 @@ def cycle_ants(cycles, position_range):
             Green += 1
         elif ants[v]['color'] == 'blue':
             Blue += 1
-    return print("Blue: " + str(Blue) + "\n" + "Green: " + str(Green))
+    # print(position_history)
+    return Blue, Green, changes_per_cycle
 
 
 # If ants have met, records color of ant that was met
-def meeting_results():
+def meeting_results(ants):
+    changes = []
     for i in ants:
         green = 0
         blue = 0
@@ -52,34 +58,31 @@ def meeting_results():
                 green += 1
             elif s == 'blue':
                 blue += 1
-        resp = color_response(green, blue, i)
-        # print(str(i) + ' Green: ' + str(green))
-        # print(str(i) + ' Blue: ' + str(blue))
+        resp = color_response(green, blue, i, ants)
         if resp != '':
-            print(resp)
+            changes.append({i: resp})
+    return changes
 
 
 # Determines if ant changes color in response to ants it's met
-def color_response(green, blue, ant_id):
+def color_response(green, blue, ant_id, ants):
     if (green >= 5) and (blue < 5):
         if ants[ant_id]['color'] == 'blue':
             return ''
         else:
-            print(str(ant_id) + ' original color: ' + str(ants[ant_id]['color']))
+            # print(str(ant_id) + ' original color: ' + str(ants[ant_id]['color']))
             ants[ant_id]['color'] = 'blue'
             return 'color changed to blue'
     elif (green < 5) and (blue >= 5):
         if ants[ant_id]['color'] == 'green':
             return ''
         else:
-            print(str(ant_id) + ' original color: ' + str(ants[ant_id]['color']))
+            # print(str(ant_id) + ' original color: ' + str(ants[ant_id]['color']))
             ants[ant_id]['color'] = 'green'
             return 'color changed to green'
     else:
         return ''
 
 
-get_ants(num_blue=10, num_green=20)
-cycle_ants(20, 10)
 
 

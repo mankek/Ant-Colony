@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ant Colony</title>
+</head>
+<body>
+    <div id="start param">
+        <form action="/result" method="post">
+            <label>Blue Ants: </label><input type="number" name="blue"><br><br>
+            <label>Green Ants: </label><input type="number" name="green"><br><br>
+            <label>Cycles: </label><input type="number" name="cycles"><br><br>
+            <label>Area: </label><input type="number" name="range"><br><br>
+            <br>
+            <button type="submit" name="action" value="submit">Submit</button> <button type="submit" name="action" value="refresh">Refresh</button>
+        </form>
+    </div>
+    <br>
+    <div id="results">
+        <label>Final Blue: </label><h1>{{ Blue }}</h1><label>Final Green: </label><h1>{{ Green }}</h1>
+        <label>Changes:</label>
+        <ul>
+            {% for entry in changes %}
+                <li>Cycle {{ entry.cycles }}</li>
+                    <ul>
+                        {% for change in entry.changes %}
+                            <li>{{ change }}</li>
+                        {% endfor %}
+                    </ul>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
