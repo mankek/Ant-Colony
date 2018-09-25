@@ -1,0 +1,3 @@
+The purpose of this application is to emulate (in a very rudimentary fashion) some of the emergent behaviors of an ant colony; currently, the focus is on re-creating the behavior of individual ants when it comes to 
+role-moderation. When an ant encounters another ant it remembers the role this ant plays and can keep track of how many ants it has encountered that have this role; if it notes that it has met a very low number of ants with a 
+certain role it will change to assume that role. Within this program, since there is a constant number of ants and roles, I've reconfigured this concept such that an 'ant' changes role, when another role is present too often.
