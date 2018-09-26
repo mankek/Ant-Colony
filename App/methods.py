@@ -44,7 +44,7 @@ def cycle_ants(cycles, position_range, ants):
         elif ants[v]['color'] == 'blue':
             Blue += 1
     # print(position_history)
-    return Blue, Green, changes_per_cycle
+    return Blue, Green, changes_per_cycle, position_history
 
 
 # If ants have met, records color of ant that was met

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Ant Colony</title>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
+    <link rel="stylesheet" href="/static/index.css">
 </head>
 <body>
-    <div id="start param">
+    <div id="start_param">
         <form action="/result" method="post">
             <label>Blue Ants: </label><input type="number" name="blue"><br><br>
             <label>Green Ants: </label><input type="number" name="green"><br><br>
@@ -15,7 +17,6 @@
             <button type="submit" name="action" value="submit">Submit</button> <button type="submit" name="action" value="refresh">Refresh</button>
         </form>
     </div>
-    <br>
     <div id="results">
         <label>Final Blue: </label><h1>{{ Blue }}</h1><label>Final Green: </label><h1>{{ Green }}</h1>
         <label>Changes:</label>
@@ -29,6 +30,12 @@
                     </ul>
             {% endfor %}
         </ul>
+    </div>
+    <div id="chart">
+        <script>
+            var hist = {{ history|tojson|safe }};
+        </script>
+        <script src="/static/chart.js"></script>
     </div>
 </body>
 </html>

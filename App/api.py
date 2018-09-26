@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', history="None")
 
 
 @app.route('/result', methods=['POST'])
@@ -19,8 +19,8 @@ def results():
         num_cycles = int(request.form['cycles'])
         area = int(request.form['range'])
         ants = methods.get_ants(number_blue, number_green)
-        Blue, Green, changes = methods.cycle_ants(num_cycles, area, ants)
-        return render_template('index.html', Blue=Blue, Green=Green, changes=changes)
+        Blue, Green, changes, hist = methods.cycle_ants(num_cycles, area, ants)
+        return render_template('index.html', Blue=Blue, Green=Green, changes=changes, history=hist)
     elif request.form['action'] == 'refresh':
         return redirect("index")
 
