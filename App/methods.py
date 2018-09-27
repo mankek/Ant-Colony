@@ -20,11 +20,11 @@ def get_ants(num_blue, num_green):
 def cycle_ants(cycles, position_range, ants):
     position_history = {}
     changes_per_cycle = []
-    for i in range(0, cycles + 1):
-        position_history[i] = []
+    for i in range(0, cycles):
+        position_history[i] = {}
         for s in ants:
             ants[s]['position'] = random.randint(0, position_range)
-            position_history[i].append({s: ants[s]['position']})
+            position_history[i][s] = ants[s]['position']
         for t in range(0, len(ants)):
             for u in range(0, len(ants)):
                 if t == u:
