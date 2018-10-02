@@ -42,7 +42,7 @@ g.append("circle")
         return i;
     })
 
-
+counter = 0;
 svg
     .on("click", function() {
         if (hist === "None") {
@@ -54,34 +54,34 @@ svg
                     .attr("cx", 100 * t)
             }
         } else {
-            for (s in hist) {
-                var t = setTimeout(Animate(s), 100*(parseInt(s) + 1));
-            };
+            var cycle = hist[counter.toString()]
+            console.log(cycle)
+            d3.selectAll("circle").transition()
+                .ease(d3.easeLinear)
+                .duration(2000)
+                .attr("cx", function(d, i){
+                    var new_x = cycle[i] * 50 + 50;
+                    return new_x
+                });
+            counter++;
         }
     });
 
-function Animate(cycle){
-    d3.selectAll("circle").each(function(d, i) {
-        d3.select(this).transition()
-            .delay(2000)
-            .ease(d3.easeLinear)
-            .duration(2000)
-            .attr("cx", 50 + 50 * hist[cycle][i])
-    })
+//function Animate(cycle){
+//    d3.selectAll("circle").each(function(d, i) {
+//        d3.select(this).transition()
+//            .delay(2000)
+//            .ease(d3.easeLinear)
+//            .duration(2000)
+//            .attr("cx", 50 + 50 * hist[cycle][i])
+//    setTimeout(Animate(cycle), 100*(parseInt(cycle) + 1))
+//    })
+//}
+
+
+var step = -1;
+function nextval(){
+    step++;
+    return 1000 + (500*step);
 }
-
-
-//g.append("text")
-//    .attr("x", function(d, i) {
-//        return 100;
-//    })
-//    .attr("y", function(d, i) {
-//        return i * 105 + 40
-//    })
-//    .attr("stroke", "teal")
-//    .attr("font-size", "12px")
-//    .attr("font-family", "sans-serif")
-//    .text(function(d) {
-//        return d;
-//    });
 
