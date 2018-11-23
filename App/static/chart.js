@@ -63,19 +63,21 @@ svg
                     var new_x = cycle[i] * 50 + 50;
                     return new_x
                 });
+            myVar = setTimeout(Animate, 3000)
             counter++;
         }
     });
 
 //function Animate(cycle){
-//    d3.selectAll("circle").each(function(d, i) {
-//        d3.select(this).transition()
-//            .delay(2000)
-//            .ease(d3.easeLinear)
-//            .duration(2000)
-//            .attr("cx", 50 + 50 * hist[cycle][i])
-//    setTimeout(Animate(cycle), 100*(parseInt(cycle) + 1))
-//    })
+//    var cycle = hist[counter.toString()]
+//    console.log(cycle)
+//    d3.selectAll("circle").transition()
+//        .ease(d3.easeLinear)
+//        .duration(2000)
+//        .attr("cx", function(d, i){
+//            var new_x = cycle[i] * 50 + 50;
+//            return new_x
+//        });
 //}
 
 

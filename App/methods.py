@@ -7,44 +7,64 @@ import random
 
 
 # Initializes the input number of ants with specified colors
-def get_ants(num_blue, num_green):
+def get_ants(num_blue, num_green, position_range):
     ants = {}
     for s in range(0, num_blue + 1):
-        ants[s] = {'position': 0, 'color': 'blue', 'colors': []}
+        ants["ant_" + str(s)] = {'position': random.randint(0, position_range), 'color': 'blue', 'colors': []}
     for t in range(s, s + num_green):
-        ants[t] = {'position': 0, 'color': 'green', 'colors': []}
-    return ants
+        ants["ant_" + str(t)] = {'position': random.randint(0, position_range), 'color': 'green', 'colors': []}
+    return ants, position_range
 
 
-# Each cycle each ant moves to a random position; checks if ants 'meet' (are at same position)
-def cycle_ants(cycles, position_range, ants):
+test_ants, pos_range = get_ants(5, 5, 5)
+
+
+# Each cycle each ant moves either up, down, left, right, or diagonally
+def cycle_ants(cycles, ants, position_range):
     position_history = {}
-    changes_per_cycle = []
     for i in range(0, cycles):
-        position_history[i] = {}
+        position_history["cycle_" + str(i)] = {}
         for s in ants:
-            ants[s]['position'] = random.randint(0, position_range)
-            position_history[i][s] = ants[s]['position']
-        for t in range(0, len(ants)):
-            for u in range(0, len(ants)):
-                if t == u:
+            # Defines the surrounding area of an ant
+            surrounding_area = [ants[s]['position']]
+            for t in [position_range+1, position_range, position_range-1, 1]:
+                if (ants[s]['position']-t) < 0:
+                    continue
+                elif (ants[s]['position']+t) > (position_range*position_range):
                     continue
                 else:
-                    if ants[t]['position'] == ants[u]['position']:
-                        ants[t]['colors'].append(ants[u]['color'])
-                        ants[u]['colors'].append(ants[t]['color'])
-        changes = meeting_results(ants)
-        changes_per_cycle.append({'cycles': i, 'changes': changes})
-    # Show ending distribution of ants
-    Green = 0
-    Blue = 0
-    for v in ants:
-        if ants[v]['color'] == 'green':
-            Green += 1
-        elif ants[v]['color'] == 'blue':
-            Blue += 1
-    # print(position_history)
-    return Blue, Green, changes_per_cycle, position_history
+                    surrounding_area.append(ants[s]['position'] - t)
+                    surrounding_area.append(ants[s]['position'] + t)
+            # Randomly selects a new position
+            print(surrounding_area)
+            ants[s]['position'] = random.choice(surrounding_area)
+            position_history["cycle_" + str(i)][s] = ants[s]['position']
+    return ants, position_history
+
+
+print(cycle_ants(5, test_ants, pos_range))
+
+    #     # Checks if ants have met and records color if they have
+    #     for t in range(0, len(ants)):
+    #         for u in range(0, len(ants)):
+    #             if t == u:
+    #                 continue
+    #             else:
+    #                 if ants[t]['position'] == ants[u]['position']:
+    #                     ants[t]['colors'].append(ants[u]['color'])
+    #                     ants[u]['colors'].append(ants[t]['color'])
+    #     changes = meeting_results(ants)
+    #     changes_per_cycle.append({'cycle': i, 'changes': changes})
+    # # Show ending distribution of ants
+    # Green = 0
+    # Blue = 0
+    # for v in ants:
+    #     if ants[v]['color'] == 'green':
+    #         Green += 1
+    #     elif ants[v]['color'] == 'blue':
+    #         Blue += 1
+    # # print(position_history)
+    # return Blue, Green, changes_per_cycle, position_history
 
 
 # If ants have met, records color of ant that was met
