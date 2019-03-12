@@ -1,8 +1,8 @@
 # Initial parameters
-blue_ant_number <- 2
-green_ant_number <- 5
+blue_ant_number <- 75
+green_ant_number <- 25
 size <- 3
-cycles <- 3
+cycles <- 100
 
 
 
@@ -17,11 +17,14 @@ for (i in 1:(size^2)){
 }
 
 # Creating the color history matrix and recording initial values
-history_matrix <- matrix(ncol = 2)
-color_names <- c("Blue", "Green")
-colnames(history_matrix) <- color_names
-history_matrix[1, 1] <- blue_ant_number
-history_matrix[1, 2] <- green_ant_number
+initial_blue <- c(blue_ant_number)
+initial_green <- c(green_ant_number)
+for (m in 2:(cycles + 1)){
+  initial_blue <- c(initial_blue, 0)
+  initial_green <- c(initial_green, 0)
+}
+h_df <- data.frame(initial_blue, initial_green)
+names(h_df) <- c("Blue", "Green")
 
 # Creating the colony matrix
 ant_matrix <- matrix(nrow=total_ants, ncol = 4)
@@ -70,7 +73,7 @@ for (i in 1:cycles){
   # Check if ants met
   for (u in 1:(total_ants)){
     for (v in 1:(total_ants)){
-      if (v == i){
+      if (v == u){
         next
       }else{
         if (ant_matrix[u, 2] == ant_matrix[s, 2]){
@@ -84,39 +87,37 @@ for (i in 1:cycles){
     }
   }
   # Check if ants reached color change threshold and add to color history
-  for (t in 1:(total_ants)){
-    if (as.integer(ant_matrix[t, 3]) > (total_ants/2) && ant_matrix[i, 4] < (total_ants/2)){
+  for (t in 1:total_ants){
+    if (as.integer(ant_matrix[t, 3]) > (total_ants/2) && ant_matrix[t, 4] < (total_ants/2)){
       ant_matrix[t, 1] <- "green"
+      ant_matrix[t, 3] <- 0
+      ant_matrix[t, 4] <- 0
     }else{
-      if (as.integer(ant_matrix[i, 3]) < (total_ants/2) && ant_matrix[i, 4] > (total_ants/2)){
+      if (as.integer(ant_matrix[t, 3]) < (total_ants/2) && ant_matrix[t, 4] > (total_ants/2)){
         ant_matrix[t, 1] <- "blue"
+        ant_matrix[t, 3] <- 0
+        ant_matrix[t, 4] <- 0
       }
     }
-    
+    if (ant_matrix[t, 1] == "blue"){
+      h_df$Blue[(i+1)] <- h_df$Blue[(i+1)] + 1
+    }else{
+      h_df$Green[(i+1)] <- h_df$Green[(i+1)] + 1
+    }
   }
 }
+
+# Plotting the color history
+library(ggplot2)
+cycles_list <- c(0:cycles+1)
+h <- ggplot(h_df, aes(x=cycles_list)) + 
+  geom_line(aes(y=h_df$Blue, colour="Blue")) + 
+  geom_line(aes(y=h_df$Green, colour="Green")) +
+  scale_color_manual(values=c("blue", "green"))
+h
   
   # return(history_list[-1])
 # }
 
 # run_colony(2, 3, 3, 3)
 
-  
-
-
-
-
-
-
-
-      
-#         if (ant_matrix[s, 1] == "blue"){
-#           ant_matrix[i, 3] == 1
-#         }else{
-#           ant_matrix[i, 4] == 1
-#         }
-#       }
-#     }
-#   }
-# }
-# ant_matrix
