@@ -120,10 +120,20 @@ shinyServer(function(input, output) {
   
   
   hist_data <- reactive({
+    validate(
+      need(input$blue_ants !="", "Please select a number for Blue ants"),
+      need(input$green_ants != "", "Please select a number for Green Ants"),
+      need(input$area != "", "Please select a number for the area"),
+      need(input$num_cycles != "", "Please select a number for the number of times ants move")
+    )
     history_create(input$blue_ants, input$green_ants, input$area, input$num_cycles)
   })
    
   output$colorPlot <- renderPlot({
+    
+    validate(
+      need(input$num_cycles != "", "Please select a number for the number of times ants move")
+    )
     
     cycles_list <- c(0:input$num_cycles+1)
     
