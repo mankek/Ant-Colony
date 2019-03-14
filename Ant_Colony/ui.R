@@ -23,7 +23,7 @@ shinyUI(fluidPage(
        numericInput("green_ants", "Initial Amount of Green Ants", min = 1, max = 100, step = 1, value = 6),
        numericInput("area", "Size of the area (input x input):", min = 2, max = 10, step = 1, value = 3),
        numericInput("num_cycles", "Number of times the Ants move:", min = 1, max = 100, step = 1, value = 5),
-       submitButton(text = 'Apply Changes')
+       actionButton("do", "Run Simulation")
     ),
     
     # Show a plot of the generated distribution

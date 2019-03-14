@@ -118,29 +118,33 @@ history_create <- function(blue_in, green_in, area_in, cycles_in){
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
   
-  
-  hist_data <- reactive({
-    validate(
-      need(input$blue_ants !="", "Please select a number for Blue ants"),
-      need(input$green_ants != "", "Please select a number for Green Ants"),
-      need(input$area != "", "Please select a number for the area"),
-      need(input$num_cycles != "", "Please select a number for the number of times ants move")
-    )
-    history_create(input$blue_ants, input$green_ants, input$area, input$num_cycles)
-  })
-   
   output$colorPlot <- renderPlot({
     
-    validate(
-      need(input$num_cycles != "", "Please select a number for the number of times ants move")
-    )
+    input$do
     
-    cycles_list <- c(0:input$num_cycles+1)
+    hist_data <- isolate({
+      validate(
+        need(input$blue_ants !="", "Please select a number for Blue ants"),
+        need(input$green_ants != "", "Please select a number for Green Ants"),
+        need(input$area != "", "Please select a number for the area"),
+        need(input$num_cycles != "", "Please select a number for the number of times ants move")
+      )
+      history_create(input$blue_ants, input$green_ants, input$area, input$num_cycles)
+    })
     
-    ggplot(hist_data(), aes(x=cycles_list)) + 
-      geom_line(aes(y=hist_data()$Blue, colour="Blue")) + 
-      geom_line(aes(y=hist_data()$Green, colour="Green")) +
+  
+    cycles_list <- isolate({
+      validate(
+        need(input$num_cycles != "", "Please select a number for the number of times ants move")
+      )
+      c(0:input$num_cycles+1)
+    })
+    
+    ggplot(hist_data, aes(x=cycles_list)) + 
+      geom_line(aes(y=hist_data$Blue, colour="Blue")) + 
+      geom_line(aes(y=hist_data$Green, colour="Green")) +
       scale_color_manual(values=c("blue", "green")) +
       labs( x = "Cycles", y = "Colors")
   })
+  
 })
