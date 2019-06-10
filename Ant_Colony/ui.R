@@ -19,10 +19,11 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-       numericInput("blue_ants", "Initial Amount of Blue Ants:", min = 1, max = 100, step = 1, value = 3),
-       numericInput("green_ants", "Initial Amount of Green Ants", min = 1, max = 100, step = 1, value = 6),
+       numericInput("blue_ants", "Initial Amount of Blue Ants:", min = 1, max = 100, step = 1, value = 25),
+       numericInput("green_ants", "Initial Amount of Green Ants", min = 1, max = 100, step = 1, value = 75),
        numericInput("area", "Size of the area (input x input):", min = 2, max = 10, step = 1, value = 3),
-       numericInput("num_cycles", "Number of times the Ants move:", min = 1, max = 100, step = 1, value = 5),
+       numericInput("num_cycles", "Number of times the Ants move:", min = 1, max = 100, step = 1, value = 100),
+       checkboxInput("ran_death", "Random Death", value = FALSE),
        actionButton("do", "Run Simulation")
     ),
     
