@@ -68,26 +68,26 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death){
     }
   }
   
+  
   # Running the cycles
   for (i in 1:cycles_in){
     dead_ants <- vector()
     # Change position of ants
     for (s in 1:(total_ants)){
       death_val <- as.numeric(sample(100, 1, replace = TRUE))
-      if (ran_death == TRUE){
-        if (death_val >= 1){
-          ant_matrix[s, 2] <- sample(positions, 1)
-        }else{
-          dead_ants <- c(dead_ants, s)
-        }
-      }else{
+      if (death_val >= 1){
         ant_matrix[s, 2] <- sample(positions, 1)
+      }else{
+        dead_ants <- c(dead_ants, s)
       }
     }
+
     # Kill dead ants
-    total_ants <- total_ants - length(dead_ants)
-    for (death in dead_ants){
-      ant_matrix[-death,]
+    if(ran_death==TRUE){
+      total_ants <- total_ants - length(dead_ants)
+      for (death in dead_ants){
+        ant_matrix <- ant_matrix[-death,]
+      }
     }
     # Check if ants met
     for (u in 1:(total_ants)){
@@ -95,7 +95,7 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death){
         if (v == u){
           next
         }else{
-          if (ant_matrix[u, 2] == ant_matrix[s, 2]){
+          if (ant_matrix[u, 2] == ant_matrix[v, 2]){
             if (ant_matrix[v, 1] == "blue"){
               ant_matrix[u, 3] <- as.integer(ant_matrix[1, 3]) + 1
             }else{
