@@ -152,9 +152,6 @@ shinyServer(function(input, output) {
     
   
     cycles_list <- isolate({
-      validate(
-        need(input$num_cycles != "", "Please select a number for the number of times ants move")
-      )
       c(0:input$num_cycles+1)
     })
     
