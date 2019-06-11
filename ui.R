@@ -11,7 +11,7 @@ library(shiny)
 library(ggplot2)
 
 # Define UI for application that draws a histogram
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme = "app.css",
   
   # Application title
   titlePanel("Ant Colony Behavior"),
@@ -24,6 +24,7 @@ shinyUI(fluidPage(
        numericInput("area", "Size of the area (input x input):", min = 2, max = 10, step = 1, value = 3),
        numericInput("num_cycles", "Number of times the Ants move:", min = 1, max = 100, step = 1, value = 100),
        checkboxInput("ran_death", "Random Death", value = FALSE),
+       sliderInput("death_rate", "Chance of Death (per cycle) (%)", min = 0, max = 100, value = 25, step = 1),
        actionButton("do", "Run Simulation")
     ),
     
@@ -31,5 +32,7 @@ shinyUI(fluidPage(
     mainPanel(
        plotOutput("colorPlot")
     )
-  )
+  ),
+  # Javascript
+  tags$script(src = "app.js")
 ))

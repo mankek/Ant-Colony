@@ -10,7 +10,7 @@
 library(shiny)
 library(ggplot2)
 
-history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death){
+history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, death_rate){
   
   total_ants <- blue_in + green_in
   
@@ -75,7 +75,7 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death){
     # Change position of ants
     for (s in 1:(total_ants)){
       death_val <- as.numeric(sample(100, 1, replace = TRUE))
-      if (death_val >= 1){
+      if (death_val > death_rate){
         ant_matrix[s, 2] <- sample(positions, 1)
       }else{
         dead_ants <- c(dead_ants, s)
@@ -88,6 +88,9 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death){
       for (death in dead_ants){
         ant_matrix <- ant_matrix[-death,]
       }
+    }
+    if(total_ants == 0){
+      break
     }
     # Check if ants met
     for (u in 1:(total_ants)){
@@ -144,7 +147,7 @@ shinyServer(function(input, output) {
         need(input$area != "", "Please select a number for the area"),
         need(input$num_cycles != "", "Please select a number for the number of times ants move")
       )
-      history_create(input$blue_ants, input$green_ants, input$area, input$num_cycles, input$ran_death)
+      history_create(input$blue_ants, input$green_ants, input$area, input$num_cycles, input$ran_death, input$death_rate)
     })
     
   
@@ -159,7 +162,7 @@ shinyServer(function(input, output) {
       geom_line(aes(y=hist_data$Blue, colour="Blue")) + 
       geom_line(aes(y=hist_data$Green, colour="Green")) +
       scale_color_manual(values=c("blue", "green")) +
-      labs( x = "Cycles", y = "Colors")
+      labs( x = "Cycles", y = "# of Ants")
   })
   
 })

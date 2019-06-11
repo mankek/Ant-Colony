@@ -1,0 +1,12 @@
+body{
+  background-color:#ebf6f9;
+}
+h2{
+  color:#63b4cf;
+}
+label{
+  color:#1e5162;
+}
+#death_rate{
+  display: none;
+}

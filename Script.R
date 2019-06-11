@@ -2,10 +2,9 @@
 blue_ant_number <- 75
 green_ant_number <- 25
 size <- 3
-cycles <- 100
+cycles <- 500
 
 
-test <- c(1:100)
 # run_colony <- function(blue_ant_number, green_ant_number, size, cycles){
 
 total_ants <- blue_ant_number + green_ant_number
@@ -70,7 +69,7 @@ for (i in 1:cycles){
   # Change position of ants
   for (s in 1:(total_ants)){
     death_val <- as.numeric(sample(100, 1, replace = TRUE))
-    if (death_val >= 1){
+    if (death_val >= 25){
       ant_matrix[s, 2] <- sample(positions, 1)
     }else{
       dead_ants <- c(dead_ants, s)
@@ -78,8 +77,12 @@ for (i in 1:cycles){
   }
   # Kill dead ants
   total_ants <- total_ants - length(dead_ants)
+  dead_ants <- vector()
   for (death in dead_ants){
-    ant_matrix[-death,]
+    ant_matrix <- ant_matrix[-death,]
+  }
+  if(total_ants == 0){
+    break
   }
   # Check if ants met
   for (u in 1:(total_ants)){
