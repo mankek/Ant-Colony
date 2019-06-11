@@ -4,7 +4,7 @@ green_ant_number <- 25
 size <- 3
 cycles <- 500
 death <- TRUE
-death_rate <- 1
+death_rate <- 25
 
 
 # run_colony <- function(blue_ant_number, green_ant_number, size, cycles){
@@ -13,17 +13,11 @@ total_ants <- blue_ant_number + green_ant_number
 
 # Creating area for ants to move in (dimensions: size x size)
 positions <- vector()
-for (i in 1:(size^2)){
-  positions <- c(positions, i)
-}
+positions[1:(size^2)] <- c(1:(size^2))
 
 # Creating the color history matrix and recording initial values
-initial_blue <- c(blue_ant_number)
-initial_green <- c(green_ant_number)
-for (m in 2:(cycles + 1)){
-  initial_blue <- c(initial_blue, 0)
-  initial_green <- c(initial_green, 0)
-}
+initial_blue <- c(blue_ant_number, integer(cycles))
+initial_green <- c(green_ant_number, integer(cycles))
 h_df <- data.frame(initial_blue, initial_green)
 names(h_df) <- c("Blue", "Green")
 
@@ -33,78 +27,102 @@ column_names <- c("color", "position", "blue_met", "green_met")
 colnames(ant_matrix) <- column_names
 
 # Populating matrix with blue ants
-for (i in 1:blue_ant_number){
-  ant_matrix[i, 1] <- "blue"
-  ant_matrix[i, 3] <- 0
-  ant_matrix[i, 4] <- 0
-  ant_matrix[i, 2] <- sample(positions, 1)
-}
+ant_matrix[1:blue_ant_number, 1] <- "blue"
+ant_matrix[1:blue_ant_number, 3:4] <- c(0,0)
+ant_matrix[1:blue_ant_number, 2] <- sample(positions, blue_ant_number, replace = TRUE)
 
 # Populating matrix with green ants
-for (i in 1:green_ant_number){
-  ant_matrix[(i + blue_ant_number), 1] <- "green"
-  ant_matrix[(i + blue_ant_number), 3] <- 0
-  ant_matrix[(i + blue_ant_number), 4] <- 0
-  ant_matrix[(i + blue_ant_number), 2] <- sample(positions, 1)
-}
+ant_matrix[(blue_ant_number + 1):(blue_ant_number + green_ant_number), 1] <- "green"
+ant_matrix[(blue_ant_number + 1):(blue_ant_number + green_ant_number), 3:4] <- c(0,0)
+ant_matrix[(blue_ant_number + 1):(blue_ant_number + green_ant_number), 2] <- sample(positions, green_ant_number, replace = TRUE)
 
 # Checking for ants that met
-for (i in 1:(total_ants)){
-  for (s in 1:(total_ants)){
-    if (s == i){
-      next
-    }else{
-      if (ant_matrix[i, 2] == ant_matrix[s, 2]){
-        if (ant_matrix[s, 1] == "blue"){
-          ant_matrix[i, 3] <- as.integer(ant_matrix[1, 3]) + 1
-        }else{
-          ant_matrix[i, 4] <- as.integer(ant_matrix[1, 4]) + 1
-        }
-      }
-    }
+for (pos in positions){
+  inds <- which(ant_matrix[,2] == pos, arr.ind = FALSE)
+  same <- ant_matrix[inds,]
+  blues <- nrow(same[same[,1] == "blue",])
+  if (is.null(blues)){
+    blues <- 1
   }
+  greens <- nrow(same[same[,1] == "green",])
+  if (is.null(greens)){
+    greens <- 1
+  }
+  is_blue <- which(ant_matrix[inds, 1] == "blue")
+  is_green <- which(ant_matrix[inds, 1] == "green")
+  ant_matrix[inds[is_blue], 3] <- as.integer(blues) - 1
+  ant_matrix[inds[is_blue], 4] <- as.integer(greens)
+  ant_matrix[inds[is_green], 3] <- as.integer(blues)
+  ant_matrix[inds[is_green], 4] <- as.integer(greens) - 1
 }
 
 # Running the cycles
 for (i in 1:cycles){
-  dead_ants <- vector()
-  # Change position of ants
-  for (s in 1:(total_ants)){
-    death_val <- as.numeric(sample(100, 1, replace = TRUE))
-    if (death_val >= death_rate){
-      ant_matrix[s, 2] <- sample(positions, 1)
-    }else{
-      dead_ants <- c(dead_ants, s)
-    }
-  }
-  # Kill dead ants
-  total_ants <- total_ants - length(dead_ants)
-  if (death == TRUE){
-    for (dead in dead_ants){
-      ant_matrix <- ant_matrix[-death,]
-    }
-  }
   
+  # Changing positions and killing ants
+  death_val <- as.numeric(sample(100, total_ants, replace = TRUE))
+  dead_ants <- which(death_val < death_rate, arr.ind = TRUE)
+  live_ants <- which(death_val >= death_rate, arr.ind = TRUE)
+
+  if (death == TRUE){
+    ant_matrix[live_ants, 2] <- sample(positions, (total_ants - length(dead_ants)), replace = TRUE)
+    ant_matrix <- ant_matrix[-dead_ants,]
+    total_ants <- total_ants - length(dead_ants)
+  }else{
+    ant_matrix[,2] <- sample(positions, total_ants, replace = TRUE)
+  }
   if(total_ants == 0){
     break
   }
+  
   # Check if ants met
-  for (u in 1:(total_ants)){
-    for (v in 1:(total_ants)){
-      if (v == u){
-        next
-      }else{
-        if (ant_matrix[u, 2] == ant_matrix[v, 2]){
-          if (ant_matrix[v, 1] == "blue"){
-            ant_matrix[u, 3] <- as.integer(ant_matrix[1, 3]) + 1
-          }else{
-            ant_matrix[u, 4] <- as.integer(ant_matrix[1, 4]) + 1
-          }
-        }
-      }
+  for (pos in positions){
+    inds <- which(ant_matrix[,2] == pos, arr.ind = FALSE)
+    same <- ant_matrix[inds,]
+    blues <- nrow(same[same[,1] == "blue",])
+    if (is.null(blues)){
+      blues <- 1
     }
+    greens <- nrow(same[same[,1] == "green",])
+    if (is.null(greens)){
+      greens <- 1
+    }
+    is_blue <- which(ant_matrix[inds, 1] == "blue")
+    is_green <- which(ant_matrix[inds, 1] == "green")
+    ant_matrix[inds[is_blue], 3] <- as.integer(ant_matrix[inds[is_blue], 3]) + as.integer(blues) - 1
+    ant_matrix[inds[is_blue], 4] <- as.integer(ant_matrix[inds[is_blue], 4]) + as.integer(greens)
+    ant_matrix[inds[is_green], 3] <- as.integer(ant_matrix[inds[is_green], 3]) + as.integer(blues)
+    ant_matrix[inds[is_green], 4] <- as.integer(ant_matrix[inds[is_green], 4]) + as.integer(greens) - 1
   }
+  
+  # Timing is roughly similar to above, but above is more consistent
+  # for (u in 1:(total_ants)){
+  #   for (v in 1:(total_ants)){
+  #     if (v == u){
+  #       next
+  #     }else{
+  #       if (ant_matrix[u, 2] == ant_matrix[v, 2]){
+  #         if (ant_matrix[v, 1] == "blue"){
+  #           ant_matrix[u, 3] <- as.integer(ant_matrix[1, 3]) + 1
+  #         }else{
+  #           ant_matrix[u, 4] <- as.integer(ant_matrix[1, 4]) + 1
+  #         }
+  #       }
+  #     }
+  #   }
+  # }
+  
   # Check if ants reached color change threshold and add to color history
+  # ptm <- proc.time()
+  # threshold <- total_ants/2
+  # green_change <- which(ant_matrix[,3] > threshold && ant_matrix[,4] < threshold)
+  # blue_change <- which(ant_matrix[,3] < threshold && ant_matrix[,4] > threshold)
+  # ant_matrix[green_change, 1] <- "green"
+  # ant_matrix[green_change, 3:4] <- c(0,0)
+  # ant_matrix[blue_change, 1] <- "blue"
+  # ant_matrix[blue_change, 3:4] <- c(0,0)
+  # print(NCOL(blue_change))
+  
   for (t in 1:total_ants){
     if (as.integer(ant_matrix[t, 3]) > (total_ants/2) && ant_matrix[t, 4] < (total_ants/2)){
       ant_matrix[t, 1] <- "green"
