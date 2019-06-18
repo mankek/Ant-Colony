@@ -38,7 +38,6 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, dea
   ant_matrix[(blue_in + 1):(blue_in + green_in), 1] <- "green"
   ant_matrix[(blue_in + 1):(blue_in + green_in), 3:4] <- c(0,0)
   ant_matrix[(blue_in + 1):(blue_in + green_in), 2] <- sample(positions, green_in, replace = TRUE)
-  browser()
   
   # Checking for ants that met
   for(pos in positions){
@@ -68,7 +67,7 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, dea
       }
       total_ants <- total_ants - length(dead_ants)
       if (length(dead_ants) != 0){
-        ant_matrix <- ant_matrix[-dead_ants]
+        ant_matrix <- ant_matrix[-dead_ants,]
       }
     }else{
       ant_matrix[,2] <- sample(positions, total_ants, replace = TRUE)
@@ -78,12 +77,12 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, dea
     }
     
     # Check if ants met
+    ant_matrix <- matrix(ant_matrix, ncol = 4)
     for (pos in positions){
-      browser()
-      inds <- which(as.matrix(ant_matrix[,2]) == pos, arr.ind = FALSE)
-      same <- as.matrix(ant_matrix[inds,])
-      blues <- nrow(as.matrix(same[same[,1] == "blue",]))
-      greens <- nrow(as.matrix(same[same[,1] == "green",]))
+      inds <- which(ant_matrix[,2] == pos, arr.ind = FALSE)
+      same <- matrix(ant_matrix[inds,], ncol = 4)
+      blues <- nrow(matrix(same[same[,1] == "blue",], ncol = 4))
+      greens <- nrow(matrix(same[same[,1] == "green",], ncol = 4))
       is_blue <- which(ant_matrix[inds, 1] == "blue")
       is_green <- which(ant_matrix[inds, 1] == "green")
       ant_matrix[inds[is_blue], 3] <- as.integer(ant_matrix[inds[is_blue], 3]) + as.integer(blues) - 1

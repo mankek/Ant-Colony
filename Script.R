@@ -3,9 +3,9 @@ ptm <- proc.time()
 blue_ant_number <- 75
 green_ant_number <- 25
 size <- 3
-cycles <- 500
+cycles <- 100
 death <- TRUE
-death_rate <- 1
+death_rate <- 25
 
 
 # run_colony <- function(blue_ant_number, green_ant_number, size, cycles){
@@ -76,11 +76,12 @@ for (i in 1:cycles){
   
   # Check if ants met
   # ptm <- proc.time()
+  ant_matrix <- matrix(ant_matrix, ncol = 4)
   for (pos in positions){
-    inds <- which(as.matrix(ant_matrix[,2]) == pos, arr.ind = FALSE)
-    same <- as.matrix(ant_matrix[inds,])
-    blues <- nrow(as.matrix(same[same[,1] == "blue",]))
-    greens <- nrow(as.matrix(same[same[,1] == "green",]))
+    inds <- which(ant_matrix[,2] == pos, arr.ind = FALSE)
+    same <- matrix(ant_matrix[inds,], ncol = 4)
+    blues <- nrow(matrix(same[same[,1] == "blue",], ncol = 4))
+    greens <- nrow(matrix(same[same[,1] == "green",], ncol = 4))
     is_blue <- which(ant_matrix[inds, 1] == "blue")
     is_green <- which(ant_matrix[inds, 1] == "green")
     ant_matrix[inds[is_blue], 3] <- as.integer(ant_matrix[inds[is_blue], 3]) + as.integer(blues) - 1
