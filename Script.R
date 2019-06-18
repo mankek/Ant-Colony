@@ -2,9 +2,9 @@ ptm <- proc.time()
 # Initial parameters
 blue_ant_number <- 75
 green_ant_number <- 25
-size <- 3
+size <- 4
 cycles <- 100
-death <- TRUE
+death <- FALSE
 death_rate <- 25
 
 

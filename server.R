@@ -11,7 +11,6 @@ library(shiny)
 library(ggplot2)
 
 history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, death_rate){
-  
   total_ants <- blue_in + green_in
   
   # Creating area for ants to move in (dimensions: size x size)
@@ -42,7 +41,7 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, dea
   # Checking for ants that met
   for(pos in positions){
     inds <- which(as.matrix(ant_matrix[,2]) == pos, arr.ind = FALSE)
-    same <- ant_matrix[inds,]
+    same <- matrix(ant_matrix[inds,], ncol = 4)
     blues <- nrow(as.matrix(same[same[,1] == "blue",]))
     greens <- nrow(as.matrix(same[same[,1] == "green",]))
     is_blue <- which(ant_matrix[inds, 1] == "blue")
