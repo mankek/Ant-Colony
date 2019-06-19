@@ -10,8 +10,9 @@ If two ants end up at the same position, each records the color of the ant they 
 If the number of met ants of a certain color exceeds half the ant population and the number met of 
 the other color is under half, the ant changes color. The record of ants met is restarted upon color change.
 
-A variable of random death can also be introduced; this variable means that for each cycle, each ant will have a certain percent chance
-of dying and being removed from the population. Since there is no 'birth' variable, even relatively low chances of death (5%) will cause the ant population to dwindle to nothing.
+A variable of random death can also be introduced; this variable means that for each cycle, each ant will have a certain percent chance of dying and being removed from the population.
+
+A variable of random birth can also be introduced; for each cycle, each larvae in a group of 100 (hard-coded at the moment; can't be altered) will have a certain percent chance of surviving to adulthood and being added to the population. Color and position are randomly selected for new ants.
 
 In addition to a stand-alone script (Script.py), this holds an R Shiny application in the Ant_Colony folder.
 It can be run using RStudio or by navigating into the project directory and using the console command:

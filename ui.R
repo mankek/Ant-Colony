@@ -24,7 +24,9 @@ shinyUI(fluidPage(theme = "app.css",
        numericInput("area", "Size of the area (input x input):", min = 2, max = 10, step = 1, value = 3),
        numericInput("num_cycles", "Number of times the Ants move:", min = 1, max = 100, step = 1, value = 100),
        checkboxInput("ran_death", "Random Death", value = FALSE),
-       sliderInput("death_rate", "Chance of Death (per cycle) (%)", min = 0, max = 100, value = 25, step = 1),
+       sliderInput("death_rate", "Chance of Death (for all ants per cycle) (%)", min = 0, max = 100, value = 25, step = 1),
+       checkboxInput("ran_birth", "Random Birth", value = FALSE),
+       sliderInput("birth_rate", "Chance of Larvae Survival (for 100 larvae per cycle) (%)", min = 0, max = 100, value = 25, step = 1),
        actionButton("do", "Run Simulation")
     ),
     

@@ -10,7 +10,7 @@
 library(shiny)
 library(ggplot2)
 
-history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, death_rate){
+history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, death_rate, ran_birth, birth_rate){
   total_ants <- blue_in + green_in
   
   # Creating area for ants to move in (dimensions: size x size)
@@ -75,6 +75,19 @@ history_create <- function(blue_in, green_in, area_in, cycles_in, ran_death, dea
       break
     }
     
+    # Birth of new ants
+    if (ran_birth == TRUE){
+      birth_val <- as.numeric(sample(100, 100, replace = TRUE))
+      new_ants <- length(which(birth_val < birth_rate, arr.ind = TRUE))
+      if(new_ants > 0){
+        new_colors <- sample(c("green", "blue"), new_ants, replace = TRUE)
+        new_matrix <- cbind(new_colors, sample(positions, new_ants, replace = TRUE), 0, 0)
+        colnames(new_matrix) <- column_names
+        ant_matrix <- rbind(ant_matrix, new_matrix)
+        total_ants <- total_ants + new_ants
+      }
+    }
+    
     # Check if ants met
     ant_matrix <- matrix(ant_matrix, ncol = 4)
     for (pos in positions){
@@ -122,7 +135,8 @@ shinyServer(function(input, output) {
         need(input$area != "", "Please select a number for the area"),
         need(input$num_cycles != "", "Please select a number for the number of times ants move")
       )
-      history_create(input$blue_ants, input$green_ants, input$area, input$num_cycles, input$ran_death, input$death_rate)
+      history_create(input$blue_ants, input$green_ants, input$area, input$num_cycles, input$ran_death, input$death_rate,
+                     input$ran_birth, input$birth_rate)
     })
     
   
