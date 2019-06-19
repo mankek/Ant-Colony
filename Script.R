@@ -4,8 +4,9 @@ blue_ant_number <- 75
 green_ant_number <- 25
 size <- 4
 cycles <- 100
-death <- FALSE
-death_rate <- 25
+death <- TRUE
+death_rate <- 50
+birth_rate <- 50
 
 
 # run_colony <- function(blue_ant_number, green_ant_number, size, cycles){
@@ -40,7 +41,7 @@ ant_matrix[(blue_ant_number + 1):(blue_ant_number + green_ant_number), 2] <- sam
 # Checking for ants that met
 for (pos in positions){
   inds <- which(ant_matrix[,2] == pos, arr.ind = FALSE)
-  same <- ant_matrix[inds,]
+  same <- matrix(ant_matrix[inds,], ncol = 4)
   blues <- nrow(as.matrix(same[same[,1] == "blue",]))
   greens <- nrow(as.matrix(same[same[,1] == "green",]))
   is_blue <- which(ant_matrix[inds, 1] == "blue")
@@ -72,6 +73,24 @@ for (i in 1:cycles){
   if(total_ants == 0){
     break
   }
+  
+  # Birth of new ants
+  birth_val <- as.numeric(sample(100, 100, replace = TRUE))
+  new_ants <- length(which(birth_val < birth_rate, arr.ind = TRUE))
+  if(new_ants > 0){
+    new_colors <- sample(c("green", "blue"), new_ants, replace = TRUE)
+    new_matrix <- cbind(new_colors, sample(positions, new_ants, replace = TRUE), 0, 0)
+    colnames(new_matrix) <- column_names
+    ant_matrix <- rbind(ant_matrix, new_matrix)
+    total_ants <- total_ants + new_ants
+  }
+  
+
+  # ant_matrix[(total_ants + 1):(total_ants + new_ants), 1] <- new_colors
+  # ant_matrix[(total_ants + 1):(total_ants + new_ants), 3:4] <- c(0,0)
+  # ant_matrix[(total_ants + 1):(total_ants + new_ants), 2] <- sample(positions, new_ants, replace = TRUE)
+
+  
 
   
   # Check if ants met
