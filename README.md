@@ -22,5 +22,3 @@ R -e shiny::runApp()
 ```
 
 This will launch the application on a random port (if you want a specific port specify 'port = ####' inside the console command).
-
-It will take a few moments for the graph to load.

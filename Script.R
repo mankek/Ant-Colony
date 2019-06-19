@@ -6,6 +6,7 @@ size <- 4
 cycles <- 100
 death <- TRUE
 death_rate <- 50
+birth <- TRUE
 birth_rate <- 50
 
 
@@ -75,23 +76,17 @@ for (i in 1:cycles){
   }
   
   # Birth of new ants
-  birth_val <- as.numeric(sample(100, 100, replace = TRUE))
-  new_ants <- length(which(birth_val < birth_rate, arr.ind = TRUE))
-  if(new_ants > 0){
-    new_colors <- sample(c("green", "blue"), new_ants, replace = TRUE)
-    new_matrix <- cbind(new_colors, sample(positions, new_ants, replace = TRUE), 0, 0)
-    colnames(new_matrix) <- column_names
-    ant_matrix <- rbind(ant_matrix, new_matrix)
-    total_ants <- total_ants + new_ants
+  if (birth == TRUE){
+    birth_val <- as.numeric(sample(100, 100, replace = TRUE))
+    new_ants <- length(which(birth_val < birth_rate, arr.ind = TRUE))
+    if(new_ants > 0){
+      new_colors <- sample(c("green", "blue"), new_ants, replace = TRUE)
+      new_matrix <- cbind(new_colors, sample(positions, new_ants, replace = TRUE), 0, 0)
+      colnames(new_matrix) <- column_names
+      ant_matrix <- rbind(ant_matrix, new_matrix)
+      total_ants <- total_ants + new_ants
+    }
   }
-  
-
-  # ant_matrix[(total_ants + 1):(total_ants + new_ants), 1] <- new_colors
-  # ant_matrix[(total_ants + 1):(total_ants + new_ants), 3:4] <- c(0,0)
-  # ant_matrix[(total_ants + 1):(total_ants + new_ants), 2] <- sample(positions, new_ants, replace = TRUE)
-
-  
-
   
   # Check if ants met
   # ptm <- proc.time()
@@ -109,7 +104,7 @@ for (i in 1:cycles){
     ant_matrix[inds[is_green], 4] <- as.integer(ant_matrix[inds[is_green], 4]) + as.integer(greens) - 1
   }
   # proc.time() - ptm
-
+  
   # Timing is roughly similar to above, but going with above to reduce loops
   # ptm <- proc.time()
   # for (u in 1:(total_ants)){
